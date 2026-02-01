@@ -56,7 +56,7 @@ gem "dry-monads", "~> 1.6"
 gem "figaro"
 
 # Authentication
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 gem "jwt", "~> 3.1"
 gem "omniauth-google-oauth2", "~> 1.1"
 gem "omniauth-rails_csrf_protection"
