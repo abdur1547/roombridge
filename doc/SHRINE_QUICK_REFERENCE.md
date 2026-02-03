@@ -83,6 +83,46 @@ end
 <% end %>
 ```
 
+### User Profile with Verification Documents
+
+```ruby
+# Model (already implemented in User model)
+class User < ApplicationRecord
+  include ImageUploader::Attachment.new(:profile_picture)
+  include IdentityUploader::Attachment.new(:verification_selfie)
+  include IdentityUploader::Attachment.new(:cnic_images, multiple: true)
+end
+
+# Controller (add to strong parameters)
+def user_params
+  params.require(:user).permit(
+    :phone_number, :full_name, :cnic, :gender, :role,
+    :profile_picture, :verification_selfie, cnic_images: []
+  )
+end
+
+# View - Profile Picture
+<%= form.file_field :profile_picture, accept: "image/*" %>
+<% if user.profile_picture.present? %>
+  <%= image_tag user.profile_picture(:thumb).url, class: "profile-picture" %>
+<% end %>
+
+# View - Verification Selfie
+<%= form.file_field :verification_selfie, accept: "image/*" %>
+<% if user.verification_selfie.present? %>
+  <%= image_tag user.verification_selfie(:thumb).url, class: "verification-selfie" %>
+<% end %>
+
+# View - CNIC Images (front and back)
+<%= form.file_field :cnic_images, multiple: true, accept: "image/*" %>
+<% user.cnic_images.each_with_index do |cnic_image, index| %>
+  <div class="cnic-image">
+    <h5>CNIC <%= index == 0 ? 'Front' : 'Back' %></h5>
+    <%= image_tag cnic_image(:medium).url %>
+  </div>
+<% end %>
+```
+
 ## Common Patterns
 
 ### User Avatar

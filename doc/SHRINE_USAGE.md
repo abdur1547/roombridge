@@ -39,11 +39,11 @@ S3_STORE_BUCKET: "your-app-store"
 - 10MB file size limit
 - Basic image format validation
 
-### Image Uploader (`app/uploaders/image_uploader.rb`)
-- Specific to image uploads
-- 5MB file size limit
-- Image dimension validation
-- Automatic image processing (thumb, medium, large versions)
+### Identity Uploader (`app/uploaders/identity_uploader.rb`)
+- For verification documents (selfies, CNIC, etc.)
+- 3MB file size limit
+- Stricter validations for document quality
+- Automatic processing (thumb, medium, compressed versions)
 
 ## Adding Attachments to Models
 
@@ -83,6 +83,90 @@ rails db:migrate
 ```
 
 #### 2. Update User Model
+
+```ruby
+class User < ApplicationRecord
+  # File attachments
+  include ImageUploader::Attachment.new(:profile_picture)
+  include IdentityUploader::Attachment.new(:verification_selfie)
+  include IdentityUploader::Attachment.new(:cnic_images, multiple: true)
+  
+  # Your existing code...
+  
+  def verification_documents_complete?
+    verification_selfie.present? && cnic_images.present?
+  end
+end
+```
+
+#### 3. Update Controller (Strong Parameters)
+
+```ruby
+class UsersController < ApplicationController
+  private
+
+  def user_params
+    params.require(:user).permit(
+      :phone_number, :full_name, :cnic, :gender, :role,
+      :profile_picture, :verification_selfie, cnic_images: []
+    )
+  end
+end
+```
+
+#### 4. Update Forms
+
+```erb
+<%= form_with model: @user, local: true do |form| %>
+  <!-- Profile Picture -->
+  <div class="field">
+    <%= form.label :profile_picture %>
+    <%= form.file_field :profile_picture, accept: "image/*" %>
+  </div>
+  
+  <!-- Verification Selfie -->
+  <div class="field">
+    <%= form.label :verification_selfie, "Verification Selfie" %>
+    <%= form.file_field :verification_selfie, accept: "image/*" %>
+  </div>
+  
+  <!-- CNIC Images -->
+  <div class="field">
+    <%= form.label :cnic_images, "CNIC Photos (Front & Back)" %>
+    <%= form.file_field :cnic_images, multiple: true, accept: "image/*" %>
+  </div>
+  
+  <%= form.submit %>
+<% end %>
+```
+
+#### 5. Display Images in Views
+
+```erb
+<!-- Profile Picture -->
+<% if user.profile_picture.present? %>
+  <%= image_tag user.profile_picture(:medium).url, alt: "Profile Picture", class: "profile-img" %>
+<% end %>
+
+<!-- Verification Selfie (for admin review) -->
+<% if user.verification_selfie.present? %>
+  <%= image_tag user.verification_selfie(:medium).url, alt: "Verification Selfie" %>
+<% end %>
+
+<!-- CNIC Images -->
+<% if user.cnic_images.present? %>
+  <div class="cnic-images">
+    <% user.cnic_images.each_with_index do |cnic_image, index| %>
+      <div class="cnic-image">
+        <h5>CNIC <%= index == 0 ? 'Front' : 'Back' %></h5>
+        <%= image_tag cnic_image(:medium).url %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+```
+
+#### Original Example: Adding Avatar to User Model
 
 ```ruby
 class User < ApplicationRecord
