@@ -48,6 +48,11 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 1.2"
 
+# File uploads
+gem "shrine", "~> 3.6"
+gem "aws-sdk-s3", "~> 1.130" # for S3 storage
+gem "mini_magick", "~> 5.0" # for image processing
+
 # Dry gems for operations pattern
 gem "dry-validation", "~> 1.10"
 gem "dry-monads", "~> 1.6"
