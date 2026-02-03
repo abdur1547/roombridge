@@ -6,22 +6,22 @@ class BaseUploader < Shrine
   end
 
   # Process files when they are uploaded
-  process(:store) do |io, **|
-    versions = { original: io }
+  Attacher.derivatives do |original, **|
+    derivatives = {}
 
     # Create different image sizes if it's an image
-    if io.is_a?(UploadedFile) && io.mime_type&.start_with?("image/")
-      versions[:thumb] = ImageProcessing::MiniMagick
-        .source(io)
+    if original.mime_type&.start_with?("image/")
+      derivatives[:thumb] = ImageProcessing::MiniMagick
+        .source(original)
         .resize_to_fill(300, 300)
         .call
 
-      versions[:medium] = ImageProcessing::MiniMagick
-        .source(io)
+      derivatives[:medium] = ImageProcessing::MiniMagick
+        .source(original)
         .resize_to_fill(600, 600)
         .call
     end
 
-    versions
+    derivatives
   end
 end

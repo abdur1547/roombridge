@@ -11,33 +11,33 @@ class ImageUploader < BaseUploader
     validate_min_height 100
   end
 
-  # Process image versions
-  process(:store) do |io, **|
-    versions = { original: io }
+  # Process image derivatives
+  Attacher.derivatives do |original, **|
+    derivatives = {}
 
-    if io.mime_type&.start_with?("image/") && io.mime_type != "image/svg+xml"
+    if original.mime_type&.start_with?("image/") && original.mime_type != "image/svg+xml"
       # Thumbnail version
-      versions[:thumb] = ImageProcessing::MiniMagick
-        .source(io)
+      derivatives[:thumb] = ImageProcessing::MiniMagick
+        .source(original)
         .resize_to_fill(150, 150)
         .format("jpg")
         .call
 
       # Medium version
-      versions[:medium] = ImageProcessing::MiniMagick
-        .source(io)
+      derivatives[:medium] = ImageProcessing::MiniMagick
+        .source(original)
         .resize_to_fill(400, 400)
         .format("jpg")
         .call
 
       # Large version
-      versions[:large] = ImageProcessing::MiniMagick
-        .source(io)
+      derivatives[:large] = ImageProcessing::MiniMagick
+        .source(original)
         .resize_to_limit(1200, 1200)
         .format("jpg")
         .call
     end
 
-    versions
+    derivatives
   end
 end

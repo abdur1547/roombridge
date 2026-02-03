@@ -32,11 +32,9 @@ Shrine.plugin :cached_attachment_data # enables retaining cached file across for
 Shrine.plugin :restore_cached_data # extracts metadata for assigned cached files
 Shrine.plugin :validation_helpers
 Shrine.plugin :determine_mime_type
-Shrine.plugin :processing # enables processing of files
-Shrine.plugin :versions # enables processing of multiple versions
+Shrine.plugin :derivatives # enables processing of multiple versions
 
 # Add image processing if MiniMagick is available
 if defined?(MiniMagick)
   require "image_processing/mini_magick"
-  Shrine.plugin :derivatives
 end
