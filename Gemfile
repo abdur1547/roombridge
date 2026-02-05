@@ -21,6 +21,9 @@ gem "oj"
 # CORS support
 gem "rack-cors", "~> 3.0"
 
+# Rate limiting and protection
+gem "rack-attack", "~> 6.7"
+
 # HAML
 gem "haml-rails", "~> 3.0"
 gem "haml", "~> 7.2"
