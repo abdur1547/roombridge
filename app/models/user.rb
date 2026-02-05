@@ -12,7 +12,15 @@ class User < ApplicationRecord
 
   validates :phone_number, presence: true, uniqueness: true
   validates :cnic, uniqueness: true, allow_nil: true
+  validates :full_name, presence: true, length: { minimum: 2, maximum: 100 }, if: :otp_verified?
+  validates :otp_code, length: { is: 6 }, allow_nil: true, numericality: { only_integer: true }
+
   validate :pakistani_phone_number
+
+  # Security scopes
+  scope :otp_not_expired, -> { where("otp_expires_at > ?", Time.current) }
+  scope :otp_verified, -> { where(otp_verified: true) }
+  scope :otp_pending, -> { where(otp_verified: false) }
 
   def fully_verified?
     full_name.present? &&
@@ -20,7 +28,8 @@ class User < ApplicationRecord
     gender.present? &&
     verification_selfie.present? &&
     cnic_images.present? &&
-    admin_verification_status.verified?
+    admin_verification_status.verified? &&
+    otp_verified?
   end
 
   def super_admin?
@@ -37,6 +46,23 @@ class User < ApplicationRecord
 
   def ready_for_verification?
     full_name.present? && cnic.present? && gender.present? && verification_documents_complete?
+  end
+
+  # Clean expired OTP codes
+  def self.cleanup_expired_otps
+    where("otp_expires_at < ?", Time.current).update_all(
+      otp_code: nil,
+      otp_expires_at: nil,
+      otp_attempts: 0
+    )
+  end
+
+  def otp_expired?
+    otp_expires_at.nil? || otp_expires_at < Time.current
+  end
+
+  def otp_attempts_exceeded?
+    otp_attempts >= 3
   end
 
   private
