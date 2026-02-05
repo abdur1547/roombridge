@@ -21,6 +21,9 @@ gem "oj"
 # CORS support
 gem "rack-cors", "~> 3.0"
 
+# Rate limiting and protection
+gem "rack-attack", "~> 6.7"
+
 # HAML
 gem "haml-rails", "~> 3.0"
 gem "haml", "~> 7.2"
@@ -48,6 +51,11 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 1.2"
 
+# File uploads
+gem "shrine", "~> 3.6"
+gem "aws-sdk-s3", "~> 1.130" # for S3 storage
+gem "mini_magick", "~> 5.0" # for image processing
+
 # Dry gems for operations pattern
 gem "dry-validation", "~> 1.10"
 gem "dry-monads", "~> 1.6"
@@ -56,10 +64,7 @@ gem "dry-monads", "~> 1.6"
 gem "figaro"
 
 # Authentication
-gem "devise", "~> 4.9"
 gem "jwt", "~> 3.1"
-gem "omniauth-google-oauth2", "~> 1.1"
-gem "omniauth-rails_csrf_protection"
 
 gem "pagy", "~> 43.2"
 
