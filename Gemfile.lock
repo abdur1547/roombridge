@@ -78,8 +78,26 @@ GEM
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.3)
+    aws-eventstream (1.4.0)
+    aws-partitions (1.1212.0)
+    aws-sdk-core (3.242.0)
+      aws-eventstream (~> 1, >= 1.3.0)
+      aws-partitions (~> 1, >= 1.992.0)
+      aws-sigv4 (~> 1.9)
+      base64
+      bigdecimal
+      jmespath (~> 1, >= 1.6.1)
+      logger
+    aws-sdk-kms (1.121.0)
+      aws-sdk-core (~> 3, >= 3.241.4)
+      aws-sigv4 (~> 1.5)
+    aws-sdk-s3 (1.213.0)
+      aws-sdk-core (~> 3, >= 3.241.4)
+      aws-sdk-kms (~> 1)
+      aws-sigv4 (~> 1.5)
+    aws-sigv4 (1.12.1)
+      aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.3.0)
-    bcrypt (3.1.20)
     bcrypt_pbkdf (1.1.2)
     better_errors (2.10.1)
       erubi (>= 1.0.0)
@@ -109,6 +127,7 @@ GEM
       xpath (~> 3.2)
     concurrent-ruby (1.3.6)
     connection_pool (3.0.2)
+    content_disposition (1.0.0)
     crass (1.0.6)
     database_cleaner-active_record (2.2.2)
       activerecord (>= 5.a)
@@ -119,15 +138,11 @@ GEM
       irb (~> 1.10)
       reline (>= 0.3.8)
     debug_inspector (1.2.0)
-    devise (4.9.4)
-      bcrypt (~> 3.0)
-      orm_adapter (~> 0.1)
-      railties (>= 4.1.0)
-      responders
-      warden (~> 1.2.3)
     diff-lcs (1.6.2)
     docile (1.4.1)
     dotenv (3.2.0)
+    down (5.4.2)
+      addressable (~> 2.8)
     drb (2.2.3)
     dry-configurable (1.3.0)
       dry-core (~> 1.1)
@@ -181,12 +196,6 @@ GEM
       railties (>= 6.1.0)
     faker (3.6.0)
       i18n (>= 1.8.11, < 2)
-    faraday (2.14.0)
-      faraday-net_http (>= 2.0, < 3.5)
-      json
-      logger
-    faraday-net_http (3.4.1)
-      net-http (>= 0.5.0)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-aarch64-linux-musl)
     ffi (1.17.2-arm-linux-gnu)
@@ -209,7 +218,6 @@ GEM
       activesupport (>= 5.1)
       haml (>= 4.0.6)
       railties (>= 5.1)
-    hashie (5.0.0)
     html2haml (2.3.0)
       erubis (~> 2.7.0)
       haml (>= 4.0)
@@ -229,6 +237,7 @@ GEM
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
+    jmespath (1.6.2)
     json (2.18.0)
     jwt (3.1.2)
       base64
@@ -263,10 +272,6 @@ GEM
     minitest (6.0.1)
       prism (~> 1.5)
     msgpack (1.8.0)
-    multi_xml (0.8.1)
-      bigdecimal (>= 3.1, < 5)
-    net-http (0.7.0)
-      uri
     net-imap (0.6.2)
       date
       net-protocol
@@ -294,34 +299,9 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.0-x86_64-linux-musl)
       racc (~> 1.4)
-    oauth2 (2.0.17)
-      faraday (>= 0.17.3, < 4.0)
-      jwt (>= 1.0, < 4.0)
-      logger (~> 1.2)
-      multi_xml (~> 0.5)
-      rack (>= 1.2, < 4)
-      snaky_hash (~> 2.0, >= 2.0.3)
-      version_gem (~> 1.1, >= 1.1.9)
     oj (3.16.13)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
-    omniauth (2.1.4)
-      hashie (>= 3.4.6)
-      logger
-      rack (>= 2.2.3)
-      rack-protection
-    omniauth-google-oauth2 (1.2.1)
-      jwt (>= 2.9.2)
-      oauth2 (~> 2.0)
-      omniauth (~> 2.0)
-      omniauth-oauth2 (~> 1.8)
-    omniauth-oauth2 (1.8.0)
-      oauth2 (>= 1.4, < 3)
-      omniauth (~> 2.0)
-    omniauth-rails_csrf_protection (1.0.2)
-      actionpack (>= 4.2)
-      omniauth (~> 2.0)
-    orm_adapter (0.5.0)
     ostruct (0.6.3)
     pagy (43.2.8)
       json
@@ -352,13 +332,11 @@ GEM
     raabro (1.4.0)
     racc (1.8.1)
     rack (3.2.4)
+    rack-attack (6.8.0)
+      rack (>= 1.0, < 4)
     rack-cors (3.0.0)
       logger
       rack (>= 3.0.14)
-    rack-protection (4.2.1)
-      base64 (>= 0.1.0)
-      logger (>= 1.6.0)
-      rack (>= 3.0.0, < 4)
     rack-session (2.1.1)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
@@ -405,9 +383,6 @@ GEM
     regexp_parser (2.11.3)
     reline (0.6.3)
       io-console (~> 0.5)
-    responders (3.2.0)
-      actionpack (>= 7.0)
-      railties (>= 7.0)
     rexml (3.4.4)
     rouge (4.6.1)
     rspec-core (3.13.6)
@@ -473,15 +448,15 @@ GEM
     sexp_processor (4.17.4)
     shoulda-matchers (7.0.1)
       activesupport (>= 7.1)
+    shrine (3.6.0)
+      content_disposition (~> 1.0)
+      down (~> 5.1)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
-    snaky_hash (2.0.3)
-      hashie (>= 0.1.0, < 6)
-      version_gem (>= 1.1.8, < 3)
     solid_cable (3.0.12)
       actioncable (>= 7.2)
       activejob (>= 7.2)
@@ -526,9 +501,6 @@ GEM
     unicode-emoji (4.1.0)
     uri (1.1.1)
     useragent (0.16.11)
-    version_gem (1.1.9)
-    warden (1.2.9)
-      rack (>= 2.0.9)
     web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -555,6 +527,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  aws-sdk-s3 (~> 1.130)
   better_errors
   binding_of_caller
   blueprinter
@@ -564,7 +537,6 @@ DEPENDENCIES
   capybara
   database_cleaner-active_record (~> 2.2)
   debug
-  devise (~> 4.9)
   dry-monads (~> 1.6)
   dry-validation (~> 1.10)
   factory_bot_rails (~> 6.4)
@@ -577,19 +549,20 @@ DEPENDENCIES
   importmap-rails
   jwt (~> 3.1)
   kamal
+  mini_magick (~> 5.0)
   oj
-  omniauth-google-oauth2 (~> 1.1)
-  omniauth-rails_csrf_protection
   pagy (~> 43.2)
   pg (~> 1.6)
   propshaft
   puma (>= 5.0)
+  rack-attack (~> 6.7)
   rack-cors (~> 3.0)
   rails (~> 8.1.2)
   rspec-rails (~> 8.0)
   rubocop-rails-omakase
   selenium-webdriver
   shoulda-matchers (~> 7.0)
+  shrine (~> 3.6)
   simplecov (~> 0.22)
   solid_cable
   solid_cache

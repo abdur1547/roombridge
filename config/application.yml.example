@@ -1,13 +1,37 @@
+# Application configuration
+# Copy this file to application.yml and fill in your values
+
+# OTP Configuration
+OTP_EXPIRES_IN_MINUTES: "5"
+OTP_MAX_ATTEMPTS: "3"
+OTP_RATE_LIMIT_PER_HOUR: "3"
+
+# SMS Configuration (Production)
+# TWILIO_ACCOUNT_SID: "your-twilio-sid"
+# TWILIO_AUTH_TOKEN: "your-twilio-token" 
+# TWILIO_PHONE_NUMBER: "your-twilio-number"
+
+# Security
+JWT_SECRET_KEY: "generate-with-rails-secret"
+JWT_EXPIRATION_HOURS: "24"
+
+# Global Admin Phone Numbers (comma-separated)
+GLOBAL_ADMIN_PHONE_NUMBERS: "+923001234567,+923007654321"
+
 development:
+  # In development, OTP codes are logged instead of sent
+  SMS_PROVIDER: "development"
   # APP_HOST: "localhost:3000"
   # APP_PROTOCOL: "http"
   # GOOGLE_OAUTH_REDIRECT_URI: "http://localhost:3000/users/auth/google_oauth2/callback"
 
 test:
+  SMS_PROVIDER: "test"
   # APP_HOST: "localhost:3000"
   # JWT_SECRET_KEY: "test-secret-key-not-for-production"
 
 production:
+  SMS_PROVIDER: "twilio"
   # APP_HOST: "yourdomain.com"
   # APP_PROTOCOL: "https"
   # GOOGLE_OAUTH_REDIRECT_URI: "https://yourdomain.com/users/auth/google_oauth2/callback"
@@ -17,4 +41,9 @@ production:
   # GOOGLE_CLIENT_SECRET: "production-google-client-secret"
   # STRIPE_API_KEY: "sk_live_..."
   # STRIPE_PUBLISHABLE_KEY: "pk_live_..."
+  
+  # Production secrets
+  SECRET_KEY_BASE: "your-secret-key-base"
+  # Rate limiting
+  REDIS_URL: "redis://localhost:6379/0"
 
