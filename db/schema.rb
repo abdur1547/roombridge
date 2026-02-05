@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2024_08_13_073724) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_03_204911) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -35,19 +35,27 @@ ActiveRecord::Schema[8.1].define(version: 2024_08_13_073724) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "avatar_url"
+    t.integer "admin_verification_status", default: 0, null: false
+    t.string "cnic"
+    t.text "cnic_images_data"
     t.datetime "created_at", null: false
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "name", default: "", null: false
-    t.string "provider"
-    t.datetime "remember_created_at"
-    t.datetime "reset_password_sent_at"
-    t.string "reset_password_token"
-    t.string "uid"
+    t.string "full_name"
+    t.integer "gender"
+    t.datetime "last_otp_sent_at"
+    t.integer "otp_attempts", default: 0
+    t.string "otp_code"
+    t.datetime "otp_expires_at"
+    t.boolean "otp_verified", default: false
+    t.string "phone_number", null: false
+    t.text "profile_picture_data"
+    t.integer "role", default: 0, null: false
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.text "verification_selfie_data"
+    t.index ["cnic"], name: "index_users_on_cnic", unique: true, where: "(cnic IS NOT NULL)"
+    t.index ["otp_code"], name: "index_users_on_otp_code"
+    t.index ["otp_expires_at"], name: "index_users_on_otp_expires_at"
+    t.index ["otp_verified"], name: "index_users_on_otp_verified"
+    t.index ["phone_number"], name: "index_users_on_phone_number", unique: true
   end
 
   add_foreign_key "blacklisted_tokens", "users"
