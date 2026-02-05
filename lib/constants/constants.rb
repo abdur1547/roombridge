@@ -9,4 +9,7 @@ module Constants
   ORDER_DIRECTIONS = %w[asc ASC desc DESC].freeze
   API_DATE_FORMAT = "%d/%m/%Y"
   API_TIME_FORMAT = "%H:%M"
+
+  # CNIC Hashing Salt - DO NOT CHANGE THIS VALUE AFTER PRODUCTION USE
+  CNIC_SALT = "roombridge_cnic_salt_2026_secure_constant_key"
 end
