@@ -2,11 +2,14 @@
 
 namespace :api do
   namespace :v0 do
-    scope :auth do
-      post :signup, to: "auth#signup"
-      post :signin, to: "auth#signin"
-      post :refresh, to: "auth#refresh"
-      delete :signout, to: "auth#signout"
+    namespace :auth do
+      # Session management
+      delete "signout", to: "auth#signout"
+      post "refresh", to: "auth#refresh"
     end
+
+    # OTP endpoints
+    post "otp/send", to: "otp#send_otp"
+    post "otp/verify", to: "otp#verify_otp"
   end
 end

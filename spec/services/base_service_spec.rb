@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-
 RSpec.describe BaseService, type: :service do
   let(:test_service_class) do
     Class.new(BaseService) do

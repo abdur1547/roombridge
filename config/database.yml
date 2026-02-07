@@ -19,7 +19,7 @@ default: &default
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   <% if ENV["DB_HOST"] %>
-  host: <%= ENV["DB_HOST"] %>
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
   username: postgres
   password: postgres
   <% end %>
@@ -28,18 +28,18 @@ default: &default
 development:
   primary:
     <<: *default
-    database: new_rails_template_development
+    database: roombridge_development
   cache:
     <<: *default
-    database: new_rails_template_development_cache
+    database: roombridge_development_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *default
-    database: new_rails_template_development_queue
+    database: roombridge_development_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *default
-    database: new_rails_template_development_cable
+    database: roombridge_development_cable
     migrations_paths: db/cable_migrate
 
   # The specified database role being used to connect to PostgreSQL.
@@ -74,7 +74,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: new_rails_template_test
+  database: roombridge_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -105,18 +105,18 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: new_rails_template_production
+    database: roombridge_production
     username: rails_starter_template
-    password: <%= ENV["NEW_RAILS_TEMPLATE_DATABASE_PASSWORD"] %>
+    password: <%= ENV["roombridge_DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_production
-    database: new_rails_template_production_cache
+    database: roombridge_production_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
-    database: new_rails_template_production_queue
+    database: roombridge_production_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
-    database: new_rails_template_production_cable
+    database: roombridge_production_cable
     migrations_paths: db/cable_migrate
