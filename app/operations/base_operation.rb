@@ -14,6 +14,25 @@ class BaseOperation
       @value = value
       @errors = errors
     end
+
+    def success?
+      @success
+    end
+
+    def failure?
+      !@success
+    end
+
+    def errors_hash
+      case @errors
+      when Hash
+        @errors
+      when Array
+        { base: @errors }
+      else
+        { base: [ @errors.to_s ] }
+      end
+    end
   end
 
   class << self
