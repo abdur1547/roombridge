@@ -4,29 +4,32 @@
 # NOTE: This requires the 'rack-attack' gem to be added to Gemfile
 # Run 'bundle install' after adding gem 'rack-attack' to Gemfile
 
+# Load constants for rate limiting
+require_relative "../../lib/constants/constants"
+
 class Rack::Attack
   ### Configure Cache
   # Note: This will use Rails.cache by default, no need to explicitly set it
 
   ### Throttle OTP Requests
-  # Throttle OTP send requests by phone number (3 requests per hour)
-  throttle("otp_requests/phone", limit: 3, period: 1.hour) do |req|
+  # Throttle OTP send requests by phone number (5 requests per hour)
+  throttle("otp/send", limit: Constants::MAX_SEND_ATTEMPTS, period: Constants::OTP_EXPIRY_TIME) do |req|
     req.params["phone_number"] if req.path.include?("send_otp")
   end
 
   # Throttle OTP verification attempts by phone number (5 attempts per 15 minutes)
-  throttle("otp_verify/phone", limit: 5, period: 15.minutes) do |req|
+  throttle("otp/verify", limit: Constants::MAX_SEND_ATTEMPTS, period: 15.minutes) do |req|
     req.params["phone_number"] if req.path.include?("verify_otp")
   end
 
   ### General API Throttling
   # Throttle all API requests by IP (100 requests per hour)
-  throttle("api_requests/ip", limit: 100, period: 1.hour) do |req|
+  throttle("api/requests/ip", limit: 100, period: 1.hour) do |req|
     req.ip if req.path.start_with?("/api/")
   end
 
   # Throttle auth requests by IP (10 requests per 15 minutes)
-  throttle("auth_requests/ip", limit: 10, period: 15.minutes) do |req|
+  throttle("auth/requests/ip", limit: 10, period: 15.minutes) do |req|
     req.ip if req.path.include?("/api/v0/auth")
   end
 
@@ -37,7 +40,7 @@ class Rack::Attack
   end
 
   ### Custom response for throttled requests
-  self.throttled_response = lambda do |env|
+  self.throttled_responder = lambda do |env|
     [
       429, # status
       { "Content-Type" => "application/json" }, # headers
