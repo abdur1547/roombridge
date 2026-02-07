@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Constants
-  SESSION_LIFETIME = 1.month
-  REFRESH_TOKEN_LIFETIME = 3.months
+  SESSION_LIFETIME = 15.minutes  # Access token lifetime - shorter for security
+  REFRESH_TOKEN_LIFETIME = 30.days  # Refresh token lifetime - longer term access
   TOKEN_TYPE = "Bearer"
   DEFAULT_PER_PAGE = 50
   DEFAULT_PAGE = 1

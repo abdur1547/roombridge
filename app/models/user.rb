@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  # Associations
+  has_many :refresh_tokens, dependent: :destroy
+  has_many :blacklisted_tokens, dependent: :destroy
+
   # File attachments
   include ImageUploader::Attachment.new(:profile_picture)
   include ImageUploader::Attachment.new(:verification_selfie)

@@ -3,6 +3,7 @@
 module Api::V0
   class ApiController < ActionController::API
     include ErrorHandler
+    include Api::Versioning
 
     before_action :authenticate_user!
 
