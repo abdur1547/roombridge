@@ -4,21 +4,18 @@
 # NOTE: This requires the 'rack-attack' gem to be added to Gemfile
 # Run 'bundle install' after adding gem 'rack-attack' to Gemfile
 
-# Load constants for rate limiting
-require_relative "../../lib/constants/constants"
-
 class Rack::Attack
   ### Configure Cache
   # Note: This will use Rails.cache by default, no need to explicitly set it
 
   ### Throttle OTP Requests
   # Throttle OTP send requests by phone number (5 requests per hour)
-  throttle("otp/send", limit: Constants::MAX_SEND_ATTEMPTS, period: Constants::OTP_EXPIRY_TIME) do |req|
+  throttle("otp/send", limit: 5, period: 1.hour) do |req|
     req.params["phone_number"] if req.path.include?("send_otp")
   end
 
   # Throttle OTP verification attempts by phone number (5 attempts per 15 minutes)
-  throttle("otp/verify", limit: Constants::MAX_SEND_ATTEMPTS, period: 15.minutes) do |req|
+  throttle("otp/verify", limit: 5, period: 15.minutes) do |req|
     req.params["phone_number"] if req.path.include?("verify_otp")
   end
 
