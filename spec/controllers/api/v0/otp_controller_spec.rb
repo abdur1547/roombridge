@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Api::V0::OtpController, type: :controller do
   describe 'POST #send_otp' do
     let(:valid_params) do
-      { otp: { phone_number: '+1234567890' } }
+      { otp: { phone_number: '+923001234567' } }
     end
 
     let(:invalid_params) do
@@ -25,7 +25,7 @@ RSpec.describe Api::V0::OtpController, type: :controller do
         }.to change(OtpCode, :count).by(1)
 
         otp = OtpCode.last
-        expect(otp.phone_number).to eq('+1234567890')
+        expect(otp.phone_number).to eq('+923001234567')
         expect(otp.code).to be_present
         expect(otp.expires_at).to be > Time.current
       end
@@ -45,18 +45,18 @@ RSpec.describe Api::V0::OtpController, type: :controller do
   describe 'POST #verify_otp' do
     let!(:otp_code) do
       OtpCode.create!(
-        phone_number: '+1234567890',
+        phone_number: '+923001234567',
         code: '123456',
         expires_at: 10.minutes.from_now
       )
     end
 
     let(:valid_params) do
-      { otp: { phone_number: '+1234567890', code: '123456' } }
+      { otp: { phone_number: '+923001234567', code: '123456' } }
     end
 
     let(:invalid_code_params) do
-      { otp: { phone_number: '+1234567890', code: '654321' } }
+      { otp: { phone_number: '+923001234567', code: '654321' } }
     end
 
     context 'with valid OTP code' do

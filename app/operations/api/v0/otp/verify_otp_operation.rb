@@ -54,7 +54,7 @@ module Api::V0::Otp
     end
 
     def find_active_otp(phone_number)
-      otp_record = OtpCode.find_active_for_phone(phone_number)
+      otp_record = OtpCode.for_phone(phone_number).order(created_at: :desc).first
 
       if otp_record.nil?
         return Failure("No active OTP found for this phone number. Please request a new OTP.")

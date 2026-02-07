@@ -24,6 +24,6 @@ class PhoneNumberService < BaseService
     return false if normalized.nil?
 
     # Pakistani mobile numbers are +92 followed by 10 digits
-    normalized.match?(/\A\+92\d{11}\z/)
+    normalized.match?(/\A\+92\d{10}\z/)
   end
 end
