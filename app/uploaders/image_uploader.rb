@@ -7,8 +7,8 @@ class ImageUploader < BaseUploader
     # Validate image dimensions
     validate_max_width 4000
     validate_max_height 4000
-    validate_min_width 100
-    validate_min_height 100
+    validate_min_width 300
+    validate_min_height 300
   end
 
   # Process image derivatives
