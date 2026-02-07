@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 module ApiAuthHelpers
-  # Extract JWT token from response headers
-  # @param response [ActionDispatch::TestResponse] The response object
-  # @return [String, nil] The JWT token or nil
-  def extract_token_from_response(response)
-    response.headers['Authorization']&.split(' ')&.last
+  # Generate JWT tokens for a user using the JWT services
+  # @param user [User] The user to generate tokens for
+  # @return [Hash] Hash containing access_token and refresh_token
+  def generate_tokens_for_user(user)
+    result = Jwt::Issuer.call(user)
+    raise "Token generation failed: #{result.failure}" unless result.success?
+
+    result.data
   end
 
   # Create authorization header with JWT token
@@ -15,28 +18,34 @@ module ApiAuthHelpers
     { 'Authorization' => "Bearer #{token}" }
   end
 
-  # Sign in a user and return the JWT token
-  # @param user [User] The user to sign in
-  # @param password [String] The user's password
-  # @return [String] The JWT token
-  def api_sign_in(user, password = 'password')
-    post '/api/v0/auth/sign_in', params: {
-      user: {
-        email: user.email,
-        password: password
-      }
-    }, as: :json
-
-    extract_token_from_response(response)
+  # Generate access token for a user and return auth headers
+  # @param user [User] The user to authenticate
+  # @return [Hash] Headers with Authorization token
+  def authenticate_user(user)
+    tokens = generate_tokens_for_user(user)
+    auth_headers(tokens[:access_token])
   end
 
-  # Authenticate a user for request specs
-  # @param user [User] The user to authenticate
-  # @param password [String] The user's password (default: 'password')
-  # @return [Hash] Headers with Authorization token
-  def authenticate_user(user, password = 'password')
-    token = api_sign_in(user, password)
-    auth_headers(token)
+  # Generate decoded token data for testing
+  # @param user [User] The user
+  # @param jti [String] Optional JTI for token
+  # @return [Hash] Decoded token data
+  def generate_decoded_token(user, jti: SecureRandom.hex(16))
+    {
+      user_id: user.id,
+      jti: jti,
+      iat: Time.current.to_i,
+      exp: 15.minutes.from_now.to_i,
+      iss: 'RoomBridge',
+      aud: 'RoomBridge-API'
+    }
+  end
+
+  # Set cookies for authentication (useful for refresh token tests)
+  # @param tokens [Hash] Hash containing access_token and refresh_token
+  def set_auth_cookies(tokens)
+    cookies['access_token'] = tokens[:access_token]
+    cookies['refresh_token'] = tokens[:refresh_token].token if tokens[:refresh_token].respond_to?(:token)
   end
 end
 

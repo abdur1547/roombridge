@@ -2,9 +2,15 @@
 
 FactoryBot.define do
   factory :refresh_token do
-    token { SecureRandom.hex }
-    crypted_token { Digest::SHA256.hexdigest(token) }
-    user { create(:user) }
-    exp { Time.now.utc }
+    association :user
+    exp { 30.days.from_now }
+
+    trait :expired do
+      exp { 1.day.ago }
+    end
+
+    trait :expiring_soon do
+      exp { 1.hour.from_now }
+    end
   end
 end

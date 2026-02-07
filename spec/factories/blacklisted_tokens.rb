@@ -2,8 +2,12 @@
 
 FactoryBot.define do
   factory :blacklisted_token do
-    jti { SecureRandom.hex }
-    user { create(:user) }
-    exp { Time.now.utc + 1.hour }
+    jti { SecureRandom.hex(16) }
+    association :user
+    exp { 24.hours.from_now }
+
+    trait :expired do
+      exp { 1.hour.ago }
+    end
   end
 end
