@@ -4,29 +4,7 @@ module Api::V0
   class AuthController < ApiController
     include ActionController::Cookies
 
-    skip_before_action :authenticate_user!, only: %i[signup signin refresh]
-
-    def signup
-      result = Api::V0::Auth::SignupOperation.call(params.to_unsafe_h)
-      if result.success
-        set_auth_cookies(result.value[:access_token], result.value[:refresh_token])
-        response.set_header("Authorization", result.value[:access_token])
-        success_response(result.value)
-      else
-        unprocessable_entity(result.errors)
-      end
-    end
-
-    def signin
-      result = Api::V0::Auth::SigninOperation.call(params.to_unsafe_h)
-      if result.success
-        set_auth_cookies(result.value[:access_token], result.value[:refresh_token])
-        response.set_header("Authorization", result.value[:access_token])
-        success_response(result.value)
-      else
-        unprocessable_entity(result.errors)
-      end
-    end
+    skip_before_action :authenticate_user!, only: %i[refresh]
 
     def refresh
       result = Api::V0::Auth::RefreshOperation.call(refresh_params)
