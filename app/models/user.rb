@@ -4,15 +4,17 @@ class User < ApplicationRecord
   # File attachments
   include ImageUploader::Attachment.new(:profile_picture)
   include ImageUploader::Attachment.new(:verification_selfie)
-  include ImageUploader::Attachment.new(:cnic_images, multiple: true)
+  include ImageUploader::Attachment.new(:cnic_images)
 
   enum :admin_verification_status, { unverified: 0, pending: 1, verified: 2, rejected: 3 }
   enum :gender, { male: 0, female: 1 }
   enum :role, { seeker: 0, lister: 1 }
 
   validates :phone_number, presence: true, uniqueness: true
-  validates :cnic_hash, uniqueness: true, allow_nil: true
-  validates :full_name, presence: true, length: { minimum: 2, maximum: 100 }, if: :otp_verified?
+  with_options if: -> { fully_verified? } do
+    validates :cnic_hash, uniqueness: true, allow_nil: true
+    validates :full_name, presence: true, length: { minimum: 2, maximum: 100 }
+  end
 
   validate :pakistani_phone_number
 

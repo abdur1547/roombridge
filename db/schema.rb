@@ -10,8 +10,47 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2024_08_13_073724) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_07_101405) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pgcrypto"
 
+  create_table "blacklisted_tokens", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "exp", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "jti"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["jti"], name: "index_blacklisted_tokens_on_jti", unique: true
+    t.index ["user_id"], name: "index_blacklisted_tokens_on_user_id"
+  end
+
+  create_table "refresh_tokens", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "crypted_token"
+    t.datetime "exp", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["crypted_token"], name: "index_refresh_tokens_on_crypted_token", unique: true
+    t.index ["user_id"], name: "index_refresh_tokens_on_user_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.integer "admin_verification_status", default: 0, null: false
+    t.string "cnic_hash"
+    t.text "cnic_images_data"
+    t.datetime "created_at", null: false
+    t.string "full_name"
+    t.integer "gender"
+    t.string "phone_number", default: "", null: false
+    t.text "profile_picture_data"
+    t.integer "role", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.text "verification_selfie_data"
+    t.index ["cnic_hash"], name: "index_users_on_cnic_hash", unique: true, where: "(cnic_hash IS NOT NULL)"
+    t.index ["phone_number"], name: "index_users_on_phone_number", unique: true
+  end
+
+  add_foreign_key "blacklisted_tokens", "users"
+  add_foreign_key "refresh_tokens", "users"
 end
