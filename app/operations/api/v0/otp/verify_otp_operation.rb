@@ -113,7 +113,7 @@ module Api::V0::Otp
     def generate_tokens(user)
       result = Jwt::Issuer.call(user)
 
-      if result.success
+      if result.success?
         Success(result.data)
       else
         Rails.logger.error "Token generation failed for user #{user.id}"

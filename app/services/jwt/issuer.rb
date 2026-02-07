@@ -4,7 +4,7 @@ module Jwt
   class Issuer < BaseService
     def call(user)
       encoder_result = Jwt::Encoder.call(user)
-      return failure("Failed to generate access token") unless encoder_result.success
+      return failure("Failed to generate access token") unless encoder_result.success?
 
       access_token = encoder_result.data.first
 

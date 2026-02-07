@@ -9,13 +9,13 @@ module Api::V0
     def refresh
       result = Api::V0::Auth::RefreshOperation.call(refresh_params)
       if result.success?
-        data = result.value!
+        data = result.value
         set_auth_cookies(data[:access_token], data[:refresh_token]) if data[:refresh_token]
         response.set_header("Authorization", "Bearer #{data[:access_token]}")
         success_response(data)
       else
         clear_auth_cookies
-        unauthorized(result.failure)
+        unauthorized_response(result.errors)
       end
     rescue => e
       Rails.logger.error "Refresh operation error: #{e.message}"
@@ -29,9 +29,9 @@ module Api::V0
       clear_auth_cookies
 
       if result.success?
-        success_response(result.value!)
+        success_response(result.value)
       else
-        Rails.logger.warn "Signout operation warning: #{result.failure}"
+        Rails.logger.warn "Signout operation warning: #{result.errors}"
         success_response({ message: "Signed out", signed_out_at: Time.current })
       end
     rescue => e

@@ -12,13 +12,18 @@ module Api::V0
     private
 
     def authenticate_user!
-      current_user, decoded_token = Jwt::Authenticator.call(
+      result = Jwt::Authenticator.call(
         headers: request.headers,
         cookies: request.cookies
-      ).data
+      )
 
-      @current_user ||= current_user
-      @decoded_token ||= decoded_token
+      if result.success?
+        current_user, decoded_token = result.data
+        @current_user ||= current_user
+        @decoded_token ||= decoded_token
+      else
+        unauthorized_response(result.error)
+      end
     end
   end
 end

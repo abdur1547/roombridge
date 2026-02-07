@@ -23,7 +23,7 @@ module Api::V0::Auth
     def blacklist_access_token(user, jti, exp)
       result = Jwt::Blacklister.call(jti: jti, user: user, exp: exp)
 
-      if result.success
+      if result.success?
         Success()
       else
         Failure("Failed to invalidate token")

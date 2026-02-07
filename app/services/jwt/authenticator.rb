@@ -7,7 +7,7 @@ module Jwt
       return failure("Missing authentication token") if token.blank?
 
       decode_result = Jwt::Decoder.call(access_token: token)
-      return failure(decode_result.error) unless decode_result.success
+      return failure(decode_result.error) unless decode_result.success?
 
       decoded_token = decode_result.data
       user = authenticate_user_from_token(decoded_token)

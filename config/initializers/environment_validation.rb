@@ -5,15 +5,24 @@
 
 class EnvironmentValidator
   REQUIRED_VARS = {
-    "SECRET_KEY_BASE" => "Rails secret key for encryption",
-    "DATABASE_URL" => "Database connection string"
+    "SECRET_KEY_BASE" => "Rails secret key for encryption"
   }.freeze
 
   PRODUCTION_ONLY_VARS = {
     "CORS_ALLOWED_ORIGINS" => "Allowed CORS origins for production"
   }.freeze
 
+  TEST_DEFAULTS = {
+    "SECRET_KEY_BASE" => "test_secret_key_base_for_testing_only_" + ("a" * 32)
+  }.freeze
+
   def self.validate!
+    # Skip validation in test environment or set test defaults
+    if Rails.env.test?
+      set_test_defaults
+      return
+    end
+
     missing_vars = []
 
     # Check required variables
@@ -47,6 +56,12 @@ class EnvironmentValidator
   end
 
   private
+
+  def self.set_test_defaults
+    TEST_DEFAULTS.each do |var, default_value|
+      ENV[var] ||= default_value
+    end
+  end
 
   def self.validate_formats(missing_vars)
     # Validate SECRET_KEY_BASE length

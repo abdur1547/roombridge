@@ -44,7 +44,7 @@ module Api::V0::Auth
     def generate_new_tokens
       result = Jwt::Issuer.call(user)
 
-      if result.success
+      if result.success?
         Success(result.data)
       else
         Failure("Failed to generate new tokens")
