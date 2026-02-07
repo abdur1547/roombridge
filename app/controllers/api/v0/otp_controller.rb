@@ -18,7 +18,14 @@ module Api::V0
       result = Api::V0::Otp::VerifyOtpOperation.call(otp_verify_params.to_h)
 
       if result.success?
-        success_response(result.value)
+        data = result.value
+
+        # Set authorization header if access token is present
+        if data[:access_token]
+          response.set_header("Authorization", "Bearer #{data[:access_token]}")
+        end
+
+        success_response(data)
       else
         unprocessable_entity(result.errors_hash)
       end

@@ -14,36 +14,39 @@ module Api::V0::Otp
 
       code = params[:code]
 
-      # Check rate limiting for verification attempts
       yield check_verification_rate_limit(phone_number)
-
-      # Find active OTP for the phone number
       otp_record = yield find_active_otp(phone_number)
-
-      # Verify the code
       yield verify_code(otp_record, code)
-
-      # Mark OTP as consumed
       yield consume_otp(otp_record)
+      user = yield find_or_create_user(phone_number)
+      tokens = yield generate_tokens(user)
 
       Success({
         message: "OTP verified successfully",
         phone_number: mask_phone_number(phone_number),
-        verified_at: Time.current
+        verified_at: Time.current,
+        access_token: tokens[:access_token],
+        refresh_token: tokens[:refresh_token].token,
+        token_type: tokens[:token_type],
+        expires_in: tokens[:expires_in],
+        user: {
+          id: user.id,
+          phone_number: user.phone_number,
+          full_name: user.full_name,
+          fully_verified: user.fully_verified?
+        }
       })
     end
 
     private
 
     def check_verification_rate_limit(phone_number)
-      # Check for too many verification attempts in the last hour
       recent_attempts = Rails.cache.read("otp_verify_attempts:#{phone_number}") || 0
 
       if recent_attempts >= MAX_VERIFICATION_ATTEMPTS
         return Failure("Too many verification attempts. Please request a new OTP.")
       end
 
-      # Increment attempt counter
       Rails.cache.write(
         "otp_verify_attempts:#{phone_number}",
         recent_attempts + 1,
@@ -72,7 +75,6 @@ module Api::V0::Otp
     end
 
     def verify_code(otp_record, provided_code)
-      # Use secure comparison to prevent timing attacks
       if !ActiveSupport::SecurityUtils.secure_compare(otp_record.code, provided_code)
         return Failure("Invalid OTP code. Please check and try again.")
       end
@@ -83,13 +85,40 @@ module Api::V0::Otp
     def consume_otp(otp_record)
       otp_record.consume!
 
-      # Clear verification attempts counter on successful verification
       Rails.cache.delete("otp_verify_attempts:#{otp_record.phone_number}")
 
       Success()
     rescue => e
       Rails.logger.error "Failed to consume OTP: #{e.message}"
       Failure("Verification failed. Please try again.")
+    end
+
+    def find_or_create_user(phone_number)
+      user = User.find_by(phone_number: phone_number)
+
+      if user.nil?
+        user = User.create!(phone_number: phone_number)
+        Rails.logger.info "Created new user for phone: #{mask_phone_number(phone_number)}"
+      end
+
+      Success(user)
+    rescue ActiveRecord::RecordInvalid => e
+      Rails.logger.error "Failed to create user: #{e.message}"
+      Failure("Failed to create user account")
+    rescue => e
+      Rails.logger.error "User creation error: #{e.message}"
+      Failure("Account setup failed")
+    end
+
+    def generate_tokens(user)
+      result = Jwt::Issuer.call(user)
+
+      if result.success?
+        Success(result.data)
+      else
+        Rails.logger.error "Token generation failed for user #{user.id}"
+        Failure("Failed to generate authentication tokens")
+      end
     end
 
     def mask_phone_number(phone)

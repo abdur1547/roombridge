@@ -2,23 +2,34 @@
 
 FactoryBot.define do
   factory :user do
-    sequence(:email) { |n| "user#{n}@example.com" }
-    sequence(:name) { |n| "User #{n}" }
-    password { "password123" }
-    password_confirmation { "password123" }
+    sequence(:phone_number) { |n| "+9230012345#{n.to_s.rjust(2, '0')}" }
 
-    trait :with_google_oauth do
-      provider { "google_oauth2" }
-      sequence(:uid) { |n| "google-uid-#{n}" }
-      avatar_url { "https://example.com/avatar.jpg" }
+    trait :fully_verified do
+      full_name { "John Doe" }
+      cnic_hash { Digest::SHA256.hexdigest("12345-1234567-1") }
+      gender { :male }
+      admin_verification_status { :verified }
+      role { :seeker }
     end
 
-    trait :with_tracking do
-      sign_in_count { 5 }
-      current_sign_in_at { 1.hour.ago }
-      last_sign_in_at { 1.day.ago }
-      current_sign_in_ip { "192.168.1.1" }
-      last_sign_in_ip { "192.168.1.2" }
+    trait :female do
+      gender { :female }
+    end
+
+    trait :lister do
+      role { :lister }
+    end
+
+    trait :unverified do
+      admin_verification_status { :unverified }
+    end
+
+    trait :pending_verification do
+      admin_verification_status { :pending }
+    end
+
+    trait :rejected do
+      admin_verification_status { :rejected }
     end
   end
 end
