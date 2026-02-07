@@ -8,6 +8,6 @@ class CreateOtpCodes < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
-    add_index :otp_codes, :phone_number, unique: true
+    add_index :otp_codes, [ :phone_number, :code ], unique: true
   end
 end

@@ -32,7 +32,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_07_102635) do
     t.datetime "expires_at", null: false
     t.string "phone_number", default: "", null: false
     t.datetime "updated_at", null: false
-    t.index ["phone_number"], name: "index_otp_codes_on_phone_number", unique: true
+    t.index ["phone_number", "code"], name: "index_otp_codes_on_phone_number_and_code", unique: true
   end
 
   create_table "refresh_tokens", force: :cascade do |t|
