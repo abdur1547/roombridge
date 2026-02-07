@@ -148,18 +148,6 @@ RSpec.describe "Api::V0::Otp", type: :request do
         expect(response.headers['Authorization']).to eq("Bearer #{access_token}")
       end
 
-      it "sets auth cookies" do
-        post "/api/v0/otp/verify", params: {
-          otp: {
-            phone_number: phone_number,
-            code: valid_code
-          }
-        }
-
-        expect(response.cookies['access_token']).to be_present
-        expect(response.cookies['refresh_token']).to be_present
-      end
-
       it "sets API versioning headers" do
         post "/api/v0/otp/verify", params: {
           otp: {
@@ -246,18 +234,6 @@ RSpec.describe "Api::V0::Otp", type: :request do
         otp_record2.reload
         expect(otp_record2.consumed_at).to be_nil
         expect(otp_record2.consumed?).to be(false)
-      end
-
-      it "does not set auth cookies" do
-        post "/api/v0/otp/verify", params: {
-          otp: {
-            phone_number: otp_record2.phone_number,
-            code: invalid_code
-          }
-        }
-
-        expect(response.cookies['access_token']).to be_blank
-        expect(response.cookies['refresh_token']).to be_blank
       end
 
       it "does not set authorization header" do

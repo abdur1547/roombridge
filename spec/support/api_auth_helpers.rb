@@ -41,11 +41,19 @@ module ApiAuthHelpers
     }
   end
 
-  # Set cookies for authentication (useful for refresh token tests)
-  # @param tokens [Hash] Hash containing access_token and refresh_token
-  def set_auth_cookies(tokens)
-    cookies['access_token'] = tokens[:access_token]
-    cookies['refresh_token'] = tokens[:refresh_token].token if tokens[:refresh_token].respond_to?(:token)
+  # Generate an expired token for testing
+  # @param user [User] The user
+  # @return [String] An expired JWT token
+  def generate_expired_token(user)
+    expired_payload = {
+      user_id: user.id,
+      jti: SecureRandom.hex(16),
+      iat: 2.hours.ago.to_i,
+      exp: 1.hour.ago.to_i,
+      iss: 'RoomBridge',
+      aud: 'RoomBridge-API'
+    }
+    Jwt::Encoder.call(expired_payload).data
   end
 end
 

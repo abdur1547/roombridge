@@ -2,8 +2,6 @@
 
 module Api::V0
   class OtpController < ApiController
-    include ActionController::Cookies
-
     skip_before_action :authenticate_user!
 
     def send_otp
@@ -22,9 +20,8 @@ module Api::V0
       if result.success?
         data = result.value
 
-        # Set auth cookies if tokens are present
-        if data[:access_token] && data[:refresh_token]
-          set_auth_cookies(data[:access_token], data[:refresh_token])
+        # Set authorization header if access token is present
+        if data[:access_token]
           response.set_header("Authorization", "Bearer #{data[:access_token]}")
         end
 
@@ -35,22 +32,6 @@ module Api::V0
     end
 
     private
-
-    def set_auth_cookies(access_token, refresh_token)
-      cookies[:access_token] = {
-        value: access_token,
-        httponly: true,
-        secure: Rails.env.production?,
-        same_site: :lax
-      }
-
-      cookies[:refresh_token] = {
-        value: refresh_token,
-        httponly: true,
-        secure: Rails.env.production?,
-        same_site: :lax
-      }
-    end
 
     def otp_send_params
       params.require(:otp).permit(:phone_number)
