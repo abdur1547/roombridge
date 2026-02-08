@@ -13,8 +13,8 @@ module Api::V0
         user.profile_picture.present? ? user.profile_picture.url : nil
       end
 
-      field :phone_number_last_four do |user|
-        user.phone_number.present? ? user.phone_number.gsub(/\D/, "").last(4) : nil
+      field :masked_phone_number do |user|
+        user.phone_number.present? ? PhoneNumberService.mask(user.phone_number) : nil
       end
 
       field :member_since do |user|

@@ -19,7 +19,7 @@ module Api::V0::Otp
 
       Success({
         message: "OTP sent successfully",
-        phone_number: mask_phone_number(phone_number),
+        phone_number: PhoneNumberService.mask(phone_number),
         expires_in_minutes: otp_record.time_until_expiry,
         sent_at: otp_record.created_at
       })
@@ -95,12 +95,6 @@ module Api::V0::Otp
       # For now, simulate successful sending in production
       Rails.logger.info "SMS would be sent to #{otp_record.phone_number}"
       Success()
-    end
-
-    def mask_phone_number(phone)
-      return phone if phone.length < 4
-
-      "#{phone[0...-4]}****"
     end
   end
 end
