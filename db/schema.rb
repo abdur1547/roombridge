@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_07_123155) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_08_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -23,6 +23,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_07_123155) do
     t.uuid "user_id", null: false
     t.index ["jti"], name: "index_blacklisted_tokens_on_jti", unique: true
     t.index ["user_id"], name: "index_blacklisted_tokens_on_user_id"
+  end
+
+  create_table "listings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "area", null: false
+    t.date "available_from", null: false
+    t.string "city", null: false
+    t.datetime "created_at", null: false
+    t.integer "deposit"
+    t.boolean "furnished", default: false, null: false
+    t.integer "gender_preference", null: false
+    t.boolean "is_active", default: true, null: false
+    t.integer "max_occupants", null: false
+    t.integer "minimum_stay_months", default: 1, null: false
+    t.text "photos_data"
+    t.integer "rent_monthly", null: false
+    t.integer "room_type", null: false
+    t.boolean "smoking_allowed", default: false, null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
+    t.index ["city", "area"], name: "index_listings_on_city_and_area"
+    t.index ["is_active"], name: "index_listings_on_is_active"
+    t.index ["user_id"], name: "index_listings_on_user_id"
   end
 
   create_table "otp_codes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -62,5 +84,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_07_123155) do
   end
 
   add_foreign_key "blacklisted_tokens", "users"
+  add_foreign_key "listings", "users", on_delete: :cascade
   add_foreign_key "refresh_tokens", "users"
 end
