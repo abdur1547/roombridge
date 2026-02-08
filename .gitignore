@@ -40,3 +40,5 @@
 
 # Ignore application configuration
 /config/application.yml
+/public/uploads/cache/*
+/public/uploads/store/*
