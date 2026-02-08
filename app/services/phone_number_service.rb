@@ -26,4 +26,10 @@ class PhoneNumberService < BaseService
     # Pakistani mobile numbers are +92 followed by 10 digits
     normalized.match?(/\A\+92\d{10}\z/)
   end
+
+  def self.mask(phone)
+    return phone if phone.length < 4
+
+    "#{phone[0...-4]}****"
+  end
 end

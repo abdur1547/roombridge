@@ -4,17 +4,30 @@ module Api::V0
   class UserBlueprint < BaseBlueprint
     identifier :id
 
-    fields :email, :name
+    fields :full_name, :gender, :admin_verification_status
 
     view :profile do
-      fields :name, :email, :avatar_url, :created_at
+      fields :full_name, :gender, :admin_verification_status, :created_at
+
+      field :profile_picture_url do |user|
+        user.profile_picture.present? ? user.profile_picture.url : nil
+      end
+
+      field :masked_phone_number do |user|
+        user.phone_number.present? ? PhoneNumberService.mask(user.phone_number) : nil
+      end
+
       field :member_since do |user|
         "Member since #{user.created_at&.strftime('%B %Y')}"
       end
     end
 
     view :minimal do
-      fields :id, :name
+      fields :id, :full_name
+    end
+
+    view :verification_status do
+      fields :admin_verification_status
     end
   end
 end

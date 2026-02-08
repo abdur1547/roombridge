@@ -196,6 +196,7 @@ GEM
       railties (>= 6.1.0)
     faker (3.6.0)
       i18n (>= 1.8.11, < 2)
+    fastimage (2.4.0)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-aarch64-linux-musl)
     ffi (1.17.2-arm-linux-gnu)
@@ -541,6 +542,7 @@ DEPENDENCIES
   dry-validation (~> 1.10)
   factory_bot_rails (~> 6.4)
   faker (~> 3.6)
+  fastimage (~> 2.2)
   figaro
   haml (~> 7.2)
   haml-rails (~> 3.0)
