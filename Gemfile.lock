@@ -108,7 +108,7 @@ GEM
     binding_of_caller (1.0.1)
       debug_inspector (>= 1.2.0)
     blueprinter (1.2.1)
-    bootsnap (1.21.1)
+    bootsnap (1.22.0)
       msgpack (~> 1.2)
     brakeman (8.0.2)
       racc
