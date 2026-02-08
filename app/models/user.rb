@@ -26,7 +26,7 @@ class User < ApplicationRecord
     full_name.present? &&
     cnic_hash.present? &&
     gender.present? &&
-    admin_verification_status.verified?
+    verified?
   end
 
   def super_admin?

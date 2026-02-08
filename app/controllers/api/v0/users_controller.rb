@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Api::V0
-  class UserController < ApiController
+  class UsersController < ApiController
     def show
       result = Api::V0::User::ShowOperation.call(user: current_user)
 

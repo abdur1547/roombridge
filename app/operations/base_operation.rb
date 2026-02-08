@@ -54,14 +54,14 @@ class BaseOperation
 
     # Execute the operation with automatic validation
     # Accepts any number of arguments and forwards them to the instance
-    def call(*args)
-      new.execute(*args)
+    def call(*args, **kwargs)
+      new.execute(*args, **kwargs)
     end
   end
 
   # Execute the operation with validation and error handling
   # Accepts any number of arguments and forwards them to call
-  def execute(*args)
+  def execute(*args, **kwargs)
     # If contract is defined, validate only the first argument (params)
     if self.class.contract_class && args.any?
       validation_result = validate_params(args[0])
@@ -69,7 +69,7 @@ class BaseOperation
     end
 
     # Call the main operation logic with all arguments
-    result = call(*args)
+    result = call(*args, **kwargs)
     wrap_result(result)
     # rescue StandardError => e
     #   # Catch any unhandled exceptions and return as failure
@@ -79,7 +79,7 @@ class BaseOperation
   # Main operation logic - must be implemented by subclasses
   # @param params [Hash] Validated parameters
   # @return [Dry::Monads::Result] Success or Failure monad
-  def call(params)
+  def call(*args, **kwargs)
     raise NotImplementedError, "#{self.class} must implement #call method"
   end
 

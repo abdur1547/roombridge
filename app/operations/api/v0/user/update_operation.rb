@@ -2,16 +2,6 @@
 
 module Api::V0::User
   class UpdateOperation < BaseOperation
-    contract do
-      extend Contracts::FileUploadValidation
-
-      params do
-        optional(:profile_picture)
-      end
-
-      validate_file_upload(:profile_picture)
-    end
-
     def call(user:, **params)
       @params = params
       @user = user
@@ -29,7 +19,7 @@ module Api::V0::User
     def update_user_profile
       update_attributes = {}
 
-      update_attributes[:profile_picture] = params[:profile_picture] if params[:profile_picture].present?
+      update_attributes[:profile_picture] = params["profile_picture"] if params["profile_picture"].present?
 
       return Success() if update_attributes.empty?
 

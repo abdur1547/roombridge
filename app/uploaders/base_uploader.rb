@@ -1,4 +1,7 @@
 class BaseUploader < Shrine
+  # Store image dimensions metadata for validation
+  plugin :store_dimensions
+
   # Define processing for different versions
   Attacher.validate do
     validate_max_size 10.megabytes, message: "is too large (max is 10 MB)"
