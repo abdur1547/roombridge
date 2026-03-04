@@ -2,17 +2,9 @@ class Listing < ApplicationRecord
   include ImageUploader::Attachment(:photos)
 
   belongs_to :user
+  belongs_to :property
 
-  enum :room_type, {
-    private_room: 0,
-    shared_room: 1
-  }
-
-  enum :gender_preference, {
-    male: 0,
-    female: 1,
-    any: 2
-  }
+  enum :room_type, { private_room: 0, shared_room: 1 }
 
   validates :user_id, presence: true
   validates :city, presence: true

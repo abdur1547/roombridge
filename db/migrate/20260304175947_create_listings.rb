@@ -1,7 +1,8 @@
-class CreateListings < ActiveRecord::Migration[7.2]
+class CreateListings < ActiveRecord::Migration[8.1]
   def change
     create_table :listings, id: :uuid do |t|
       t.references :user, null: false, foreign_key: { on_delete: :cascade }, type: :uuid
+      t.references :property, null: false, foreign_key: { on_delete: :cascade }, type: :uuid
 
       # Location
       t.string :city, null: false
