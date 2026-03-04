@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_08_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_04_175947) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -37,6 +37,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_08_000001) do
     t.integer "max_occupants", null: false
     t.integer "minimum_stay_months", default: 1, null: false
     t.text "photos_data"
+    t.uuid "property_id", null: false
     t.integer "rent_monthly", null: false
     t.integer "room_type", null: false
     t.boolean "smoking_allowed", default: false, null: false
@@ -44,6 +45,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_08_000001) do
     t.uuid "user_id", null: false
     t.index ["city", "area"], name: "index_listings_on_city_and_area"
     t.index ["is_active"], name: "index_listings_on_is_active"
+    t.index ["property_id"], name: "index_listings_on_property_id"
     t.index ["user_id"], name: "index_listings_on_user_id"
   end
 
@@ -55,6 +57,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_08_000001) do
     t.string "phone_number", default: "", null: false
     t.datetime "updated_at", null: false
     t.index ["phone_number", "code"], name: "index_otp_codes_on_phone_number_and_code", unique: true
+  end
+
+  create_table "properties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "address", default: "", null: false
+    t.string "area", default: "", null: false
+    t.string "city", default: "", null: false
+    t.datetime "created_at", null: false
+    t.boolean "elevator", default: false, null: false
+    t.integer "gender_preference", default: 0, null: false
+    t.boolean "only_verified_users", default: false, null: false
+    t.uuid "owner_id", null: false
+    t.boolean "parking", default: false, null: false
+    t.integer "property_type", default: 0, null: false
+    t.integer "total_bathrooms", default: 0, null: false
+    t.integer "total_bedrooms", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_id"], name: "index_properties_on_owner_id"
   end
 
   create_table "refresh_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -84,6 +103,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_08_000001) do
   end
 
   add_foreign_key "blacklisted_tokens", "users"
+  add_foreign_key "listings", "properties", on_delete: :cascade
   add_foreign_key "listings", "users", on_delete: :cascade
+  add_foreign_key "properties", "users", column: "owner_id"
   add_foreign_key "refresh_tokens", "users"
 end
