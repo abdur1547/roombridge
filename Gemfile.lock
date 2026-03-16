@@ -306,7 +306,7 @@ GEM
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     ostruct (0.6.3)
-    pagy (43.3.3)
+    pagy (43.4.0)
       json
       uri
       yaml
@@ -555,7 +555,7 @@ DEPENDENCIES
   kamal
   mini_magick (~> 5.0)
   oj
-  pagy (~> 43.3)
+  pagy (~> 43.4)
   pg (~> 1.6)
   propshaft
   puma (>= 5.0)
