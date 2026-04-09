@@ -4,6 +4,8 @@ class User < ApplicationRecord
   # Associations
   has_many :refresh_tokens, dependent: :destroy
   has_many :blacklisted_tokens, dependent: :destroy
+  has_many :properties, dependent: :destroy
+  has_many :listings, dependent: :destroy
 
   # File attachments
   include ImageUploader::Attachment.new(:profile_picture)
