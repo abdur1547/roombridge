@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+API_ONLY_ROUTES = [ :create, :index, :show, :update, :destroy ]
+
 namespace :api do
   namespace :v0 do
     # Session management
@@ -16,5 +18,8 @@ namespace :api do
         post :upload_verification_documents
       end
     end
+
+    # Listing endpoints
+    resources :listings, only: API_ONLY_ROUTES
   end
 end
