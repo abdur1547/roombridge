@@ -65,7 +65,7 @@ gem "dry-monads", "~> 1.10"
 gem "figaro"
 
 # Authentication
-gem "jwt", "~> 3.1"
+gem "jwt", "~> 3.2"
 
 gem "pagy", "~> 43.5"
 
