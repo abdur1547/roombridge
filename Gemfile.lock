@@ -453,7 +453,7 @@ GEM
     sexp_processor (4.17.4)
     shoulda-matchers (7.0.1)
       activesupport (>= 7.1)
-    shrine (3.7.1)
+    shrine (3.8.0)
       content_disposition (~> 1.0)
       down (~> 5.1)
     simplecov (0.22.0)
@@ -567,7 +567,7 @@ DEPENDENCIES
   rubocop-rails-omakase
   selenium-webdriver
   shoulda-matchers (~> 7.0)
-  shrine (~> 3.7)
+  shrine (~> 3.8)
   simplecov (~> 0.22)
   solid_cable
   solid_cache

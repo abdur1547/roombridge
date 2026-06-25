@@ -52,7 +52,7 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 
 # File uploads
-gem "shrine", "~> 3.7"
+gem "shrine", "~> 3.8"
 gem "fastimage", "~> 2.4" # for image dimension extraction
 gem "aws-sdk-s3", "~> 1.226" # for S3 storage
 gem "mini_magick", "~> 5.0" # for image processing
