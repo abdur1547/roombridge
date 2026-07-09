@@ -67,7 +67,7 @@ gem "figaro"
 # Authentication
 gem "jwt", "~> 3.2"
 
-gem "pagy", "~> 43.5"
+gem "pagy", "~> 43.6"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
