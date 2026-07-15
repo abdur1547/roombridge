@@ -55,7 +55,7 @@ gem "image_processing", "~> 1.2"
 gem "shrine", "~> 3.9"
 gem "fastimage", "~> 2.4" # for image dimension extraction
 gem "aws-sdk-s3", "~> 1.227" # for S3 storage
-gem "mini_magick", "~> 5.0" # for image processing
+gem "mini_magick", "~> 5.3" # for image processing
 
 # Dry gems for operations pattern
 gem "dry-validation", "~> 1.10"

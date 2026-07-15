@@ -269,7 +269,7 @@ GEM
       net-smtp
     marcel (1.1.0)
     matrix (0.4.3)
-    mini_magick (5.3.1)
+    mini_magick (5.3.2)
       logger
     mini_mime (1.1.5)
     minitest (6.0.6)
@@ -555,7 +555,7 @@ DEPENDENCIES
   importmap-rails
   jwt (~> 3.2)
   kamal
-  mini_magick (~> 5.0)
+  mini_magick (~> 5.3)
   oj
   pagy (~> 43.6)
   pg (~> 1.6)
